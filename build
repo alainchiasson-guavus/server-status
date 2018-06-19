@@ -1,0 +1,6 @@
+# Build the docker image.
+#
+# Need to add parameters here
+#
+
+docker-compose build

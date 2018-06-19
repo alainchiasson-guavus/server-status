@@ -1,0 +1,37 @@
+version: '3.1'
+
+services:
+
+  frontend:
+    image: nginx
+    ports:
+      - 9090:80
+
+  adminer:
+    image: adminer
+    environment:
+      - ADMINER_DEFAULT_SERVER=mysql
+    ports:
+      - 9091:8080
+
+  # initdb:
+  #   image: mariadb
+
+  mysql:
+    image: mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+    volumes:
+     - ./initial_sql:/docker-entrypoint-initdb.d
+
+  api:
+    image: server-status:latest
+    build: .
+    environment:
+      - DATABASE_HOST=mysql
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=password
+      - DATABASE_NAME=server_status
+      - DATABASE_URL="mysql://root:password@mysql/server_status"
+    ports:
+      - 5000:5000
