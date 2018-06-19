@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_restplus import Resource, Api, reqparse
 from flask_sqlalchemy import SQLAlchemy
 import mysql.connector as db
@@ -24,6 +24,7 @@ api = Api(app)
 
 class Servers(db.Model):
    __tablename__ = 'servers'
+
    id = db.Column(db.Integer, primary_key=True)
    servername = db.Column(db.String(255), unique=True)
    status = db.Column(db.String(10))
@@ -39,8 +40,16 @@ class Servers(db.Model):
 class serversIndex(Resource):
 
     def get(self):
-       to_json = lambda server: {"id": server.id, "servername": server.servername, "status": server.status}
-       return json.dumps([to_json(server) for server in Servers.query.all()])
+        to_json = lambda server: {"id": server.id, "servername": server.servername, "status": server.status}
+        return jsonify([to_json(server) for server in Servers.query.all()])
+
+
+@api.route("/server/<id>")
+class serverInfo(Resource):
+
+    def get(self, id):
+        to_json = lambda server: {"id": server.id, "servername": server.servername, "status": server.status}
+        return jsonify([to_json(server) for server in Servers.query.filter( Servers.id == id )])
 
 
 @api.route('/info')
