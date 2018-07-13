@@ -8,9 +8,6 @@ pipeline {
       }
     }
     stage ('Validate') {
-      agent {
-        docker { image: 'server-status:preliminary' }
-      }
       steps {
         sh 'pwd'
       }
